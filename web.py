@@ -113,6 +113,18 @@ def run_generation_async(topic: str = None):
         filepath.write_text(markdown, encoding="utf-8")
         log_run(f"✓ Salvo: {filename}")
 
+        # Save PDF
+        log_run("Gerando PDF...")
+        try:
+            import pdf_generator
+            pdf_path = pdf_generator.generate_pdf(articles, contents)
+            if pdf_path:
+                log_run(f"✓ PDF: {Path(pdf_path).name}")
+            else:
+                log_run("⚠ PDF nao gerado (instale: pip install fpdf2)")
+        except Exception as e:
+            log_run(f"⚠ PDF nao gerado: {e}")
+
         log_run("✓ Geração concluída!")
         _run_status["done"] = True
 

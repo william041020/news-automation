@@ -103,6 +103,18 @@ def run(topic: str, no_telegram: bool):
     filepath.write_text(markdown, encoding="utf-8")
     click.echo(f"  Salvo em: {filepath}")
 
+    # Save PDF
+    click.echo("Gerando PDF...")
+    try:
+        import pdf_generator
+        pdf_path = pdf_generator.generate_pdf(articles, contents)
+        if pdf_path:
+            click.echo(f"  PDF salvo em: {pdf_path}")
+        else:
+            click.echo("  PDF nao gerado (instale: pip install fpdf2)")
+    except Exception as e:
+        click.echo(f"  Aviso PDF: {e}")
+
     # Send to Telegram
     if not no_telegram:
         click.echo("Enviando para Telegram...")

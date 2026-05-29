@@ -152,17 +152,19 @@ def generate_content(article: dict, client: Groq, max_retries: int = MAX_RETRIES
 
             match = re.search(r"\{.*\}", raw, re.DOTALL)
             if not match:
-                raise ValueError("No JSON object found in response")
+                print(f"    ⚠ Sem JSON na resposta, retornando vazio")
+                return {"error": "no_json"}
 
-            content = json.loads(match.group())
+            try:
+                content = json.loads(match.group())
+                if isinstance(content, dict):
+                    print(f"    ✓ JSON válido com {len(content)} chaves")
+                    return content
+            except json.JSONDecodeError as e:
+                print(f"    ⚠ JSON inválido: {e}, retornando vazio")
+                return {"error": "invalid_json"}
 
-            # Validate schema - be more permissive
-            if not isinstance(content, dict) or len(content) == 0:
-                raise ValueError("Empty or invalid JSON object")
-
-            print(f"    ✓ JSON válido com {len(content)} chaves")
-
-            return content
+            return {"error": "unknown"}
 
         except (json.JSONDecodeError, ValueError) as e:
             last_error = e

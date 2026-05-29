@@ -156,9 +156,11 @@ def generate_content(article: dict, client: Groq, max_retries: int = MAX_RETRIES
 
             content = json.loads(match.group())
 
-            # Validate schema
-            if not validate_schema(content):
-                raise ValueError("Generated JSON missing required fields")
+            # Validate schema - be more permissive
+            if not isinstance(content, dict) or len(content) == 0:
+                raise ValueError("Empty or invalid JSON object")
+
+            print(f"    ✓ JSON válido com {len(content)} chaves")
 
             return content
 

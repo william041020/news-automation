@@ -180,11 +180,24 @@ def generate_content(article: dict, client: Groq, max_retries: int = MAX_RETRIES
             print(f"    ERRO inesperado: {e}")
             return {}
 
-    # If all retries failed
+    # If all retries failed, return fallback content
     if last_error:
         print(f"    Falha final: {last_error}")
+        print(f"    ⚠ Usando conteúdo fallback")
 
-    return {}
+    return {
+        "gancho_tema": "Conteúdo de teste",
+        "roteiro_1": {
+            "tipo": "Teste",
+            "titulo": f"Teste - {article['title'][:50]}",
+            "duracao": "~45s",
+            "gancho": article.get("summary", "Teste")[:100],
+            "nota_gancho": "Tom direto",
+            "desenvolvimento": article.get("summary", ""),
+            "cta": "Me manda um direct",
+            "nota_cta": "Natural"
+        }
+    }
 
 
 def get_groq_client() -> Groq:

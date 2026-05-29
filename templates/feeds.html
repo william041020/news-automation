@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block page_title %}Gerenciar Feeds{% endblock %}
+
+{% block content %}
+<div class="page-title">Gerenciar Feeds RSS</div>
+
+<!-- Add Feed Form -->
+<div class="content-block">
+    <h3>➕ Adicionar Novo Feed</h3>
+    <form method="POST" action="/feeds/add">
+        <div style="display: grid; grid-template-columns: 1fr 200px; gap: 1rem; align-items: flex-end;">
+            <div class="form-group">
+                <label for="url">URL do Feed</label>
+                <input type="url" id="url" name="url" placeholder="https://exemplo.com/rss" required />
+            </div>
+            <div class="form-group">
+                <label for="name">Nome do Feed</label>
+                <input type="text" id="name" name="name" placeholder="Meu Feed" required />
+            </div>
+            <button type="submit" class="btn btn-primary" style="justify-self: stretch;">Adicionar</button>
+        </div>
+    </form>
+</div>
+
+<!-- Feeds List -->
+<div class="content-block">
+    <h3>📡 Feeds Configurados</h3>
+    {% if feeds %}
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>URL</th>
+                    <th>Status</th>
+                    <th>Ação</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for feed in feeds %}
+                    <tr>
+                        <td><strong>#{{ feed.id }}</strong></td>
+                        <td>{{ feed.name }}</td>
+                        <td><small style="color: var(--text-secondary);">{{ feed.url[:50] }}...</small></td>
+                        <td>
+                            <span class="badge {% if not feed.active %}inactive{% endif %}">
+                                {% if feed.active %}✓ Ativo{% else %}○ Inativo{% endif %}
+                            </span>
+                        </td>
+                        <td>
+                            <form method="POST" action="/feeds/toggle/{{ feed.id }}" style="display: inline;">
+                                <button type="submit" class="btn btn-small {% if feed.active %}btn-danger{% else %}btn-primary{% endif %}">
+                                    {% if feed.active %}Desativar{% else %}Ativar{% endif %}
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div style="margin-top: 1rem; padding: 1rem; background-color: var(--bg-secondary); border-radius: 6px; color: var(--text-secondary); font-size: 0.875rem;">
+            <strong>{{ feeds|length }}</strong> feed(s) total — <strong>{{ feeds|selectattr('active')|list|length }}</strong> ativo(s)
+        </div>
+    {% else %}
+        <p style="color: var(--text-secondary);">Nenhum feed configurado.</p>
+    {% endif %}
+</div>
+
+<!-- Info -->
+<div class="content-block" style="background-color: rgba(33, 110, 156, 0.05); border-left: 4px solid #216e9c;">
+    <h4 style="color: #58a6ff; margin-top: 0;">ℹ️ Dica: Encontrando URLs de Feeds RSS</h4>
+    <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+        <li>Google News: https://news.google.com/rss/search?q=TERMO&hl=pt-BR&gl=BR</li>
+        <li>Substituir <code style="background: var(--bg-tertiary); padding: 0.2rem 0.4rem; border-radius: 3px;">TERMO</code> por sua palavra-chave</li>
+        <li>Dica: procure por "RSS" ou "Feed" no site desejado para encontrar a URL</li>
+    </ul>
+</div>
+{% endblock %}

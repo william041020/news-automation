@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+
+{% block page_title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="page-title">Dashboard</div>
+
+<!-- Summary Cards -->
+<div class="cards-grid">
+    <div class="card">
+        <div class="card-title">📝 Total de Artigos</div>
+        <div class="card-value">{{ stats.total_articles }}</div>
+    </div>
+
+    <div class="card">
+        <div class="card-title">📅 Geração Hoje</div>
+        <div class="card-value">{{ stats.today_articles }}</div>
+        <div class="card-subtitle">{{ stats.today_date }}</div>
+    </div>
+
+    <div class="card">
+        <div class="card-title">📡 Feeds Ativos</div>
+        <div class="card-value">{{ stats.active_feeds }}</div>
+        <div class="card-subtitle">de {{ stats.total_feeds }}</div>
+    </div>
+
+    <div class="card">
+        <div class="card-title">📊 Posts c/ Métricas</div>
+        <div class="card-value">{{ stats.tracked_posts }}</div>
+        <div class="card-subtitle">com performance registrada</div>
+    </div>
+</div>
+
+<!-- Generate Section -->
+<div class="content-block">
+    <h3>⚡ Gerar Conteúdo Agora</h3>
+    <form id="generate-form" style="display: flex; gap: 1rem; align-items: flex-end;">
+        <div style="flex: 1;">
+            <label for="topic">Tópico (opcional)</label>
+            <input type="text" id="topic" name="topic" placeholder="Ex: TikTok ads, IA Marketing..." />
+        </div>
+        <button type="submit" class="btn btn-primary" id="generate-btn">
+            <span id="generate-icon">▶</span>
+            <span id="generate-text">Gerar Agora</span>
+        </button>
+    </form>
+
+    <div id="generate-status" style="margin-top: 1rem; display: none;">
+        <div class="alert info">
+            <div class="spinner"></div>
+            <div>Gerando conteúdo... <span id="status-text">buscando notícias</span></div>
+        </div>
+        <div id="generate-log" style="background-color: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 6px; padding: 1rem; font-family: monospace; font-size: 0.75rem; max-height: 300px; overflow-y: auto; color: var(--text-secondary);">
+        </div>
+    </div>
+</div>
+
+<!-- Recent Articles -->
+<div class="content-block">
+    <h3>📰 Artigos Recentes</h3>
+    {% if recent_articles %}
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Data</th>
+                    <th>Título</th>
+                    <th>Ângulo</th>
+                    <th>Ação</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for article in recent_articles %}
+                    <tr>
+                        <td><strong>#{{ article.id }}</strong></td>
+                        <td><small>{{ article.run_date }}</small></td>
+                        <td><small>{{ article.title[:60] }}...</small></td>
+                        <td><small>{{ article.gancho_tema[:40] }}...</small></td>
+                        <td><a href="/history/{{ article.id }}" class="btn btn-small">Ver →</a></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p style="color: var(--text-secondary);">Nenhum artigo gerado ainda. Clique em "Gerar Agora" para começar!</p>
+    {% endif %}
+</div>
+
+<script>
+    // Handle generate form
+    document.getElementById('generate-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const topic = document.getElementById('topic').value || null;
+        const btn = document.getElementById('generate-btn');
+        const form = document.getElementById('generate-form');
+        const status = document.getElementById('generate-status');
+        const log = document.getElementById('generate-log');
+
+        // Disable form
+        form.style.opacity = '0.5';
+        form.style.pointerEvents = 'none';
+        status.style.display = 'block';
+        log.innerHTML = '';
+
+        try {
+            // Start generation
+            const res = await fetch('/api/run', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ topic })
+            });
+
+            if (!res.ok) throw new Error('Failed to start generation');
+
+            // Poll for status
+            let done = false;
+            while (!done) {
+                await new Promise(r => setTimeout(r, 2000)); // Poll every 2s
+
+                const statusRes = await fetch('/api/run/status');
+                const statusData = await statusRes.json();
+
+                // Update log
+                log.innerHTML = statusData.log.map(line => `<div>${escapeHtml(line)}</div>`).join('');
+                log.scrollTop = log.scrollHeight;
+
+                // Update status text
+                document.getElementById('status-text').textContent = statusData.status || 'processando...';
+
+                if (statusData.done) {
+                    done = true;
+                    status.innerHTML = '<div class="alert success">✓ Conteúdo gerado com sucesso!</div>';
+
+                    // Reload page after 2s
+                    setTimeout(() => location.reload(), 2000);
+                }
+            }
+        } catch (err) {
+            status.innerHTML = `<div class="alert error">✗ Erro: ${err.message}</div>`;
+        } finally {
+            form.style.opacity = '1';
+            form.style.pointerEvents = 'auto';
+        }
+    });
+
+    function escapeHtml(text) {
+        const map = {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#039;'
+        };
+        return text.replace(/[&<>"']/g, m => map[m]);
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block page_title %}Histórico de Gerações{% endblock %}
+
+{% block content %}
+<div class="page-title">Histórico de Gerações</div>
+
+{% if runs %}
+    {% for run in runs %}
+        <div class="content-block">
+            <h3>📅 {{ run.run_date }} — {{ run.count }} artigos</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Título</th>
+                        <th>Ângulo</th>
+                        <th>Fonte</th>
+                        <th>Ação</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for article in run.articles %}
+                        <tr>
+                            <td><strong>#{{ article.id }}</strong></td>
+                            <td><small>{{ article.title[:50] }}...</small></td>
+                            <td><small>{{ article.gancho_tema[:40] }}...</small></td>
+                            <td><small>{{ article.source[:25] }}</small></td>
+                            <td><a href="/history/{{ article.id }}" class="btn btn-small">Ver →</a></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endfor %}
+{% else %}
+    <div class="alert info">
+        Nenhuma geração encontrada. <a href="/" style="color: inherit; text-decoration: underline;">Clique aqui</a> para gerar conteúdo agora.
+    </div>
+{% endif %}
+
+<style>
+    .page-title {
+        margin-bottom: 2rem;
+    }
+
+    .content-block {
+        margin-bottom: 2rem;
+    }
+
+    .content-block h3 {
+        margin-bottom: 1rem;
+    }
+</style>
+{% endblock %}

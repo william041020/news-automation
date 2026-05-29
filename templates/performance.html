@@ -1,0 +1,198 @@
+{% extends "base.html" %}
+
+{% block page_title %}Análise de Performance{% endblock %}
+
+{% block content %}
+<div class="page-title">Análise de Performance</div>
+
+<!-- Charts -->
+<div class="content-block">
+    <h3>📊 Estatísticas por Tipo de Roteiro</h3>
+    <canvas id="roteiro-chart" style="max-height: 300px;"></canvas>
+</div>
+
+<!-- Register Performance -->
+<div class="content-block">
+    <h3>📝 Registrar Métricas de um Post</h3>
+    <form method="POST" action="/performance/log" id="perf-form">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+            <div class="form-group">
+                <label for="article">Artigo</label>
+                <select id="article" name="article_id" required>
+                    <option value="">Selecione um artigo...</option>
+                    {% for article in articles %}
+                        <option value="{{ article.id }}" {% if request.args.get('article_id')|int == article.id %}selected{% endif %}>
+                            #{{ article.id }} - {{ article.title[:40] }}...
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="platform">Plataforma</label>
+                <select id="platform" name="platform" required>
+                    <option value="">Selecione...</option>
+                    <option value="instagram">Instagram (Reels/Stories)</option>
+                    <option value="reels">Meta Reels</option>
+                    <option value="carrossel">Carrossel</option>
+                    <option value="thread">Thread (X/LinkedIn)</option>
+                    <option value="tiktok">TikTok</option>
+                    <option value="youtube">YouTube</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="roteiro">Roteiro</label>
+                <select id="roteiro" name="roteiro" required>
+                    <option value="">Selecione...</option>
+                    <option value="A">Roteiro A</option>
+                    <option value="B">Roteiro B</option>
+                    <option value="carrossel">Carrossel</option>
+                    <option value="thread">Thread</option>
+                </select>
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin: 1.5rem 0;">
+            <div class="form-group">
+                <label for="views">Views</label>
+                <input type="number" id="views" name="views" value="0" min="0" />
+            </div>
+
+            <div class="form-group">
+                <label for="saves">Saves</label>
+                <input type="number" id="saves" name="saves" value="0" min="0" />
+            </div>
+
+            <div class="form-group">
+                <label for="likes">Likes</label>
+                <input type="number" id="likes" name="likes" value="0" min="0" />
+            </div>
+
+            <div class="form-group">
+                <label for="comments">Comentários</label>
+                <input type="number" id="comments" name="comments" value="0" min="0" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="posted_at">Data do Post</label>
+            <input type="date" id="posted_at" name="posted_at" value="{{ today }}" />
+        </div>
+
+        <button type="submit" class="btn btn-primary">Registrar Métricas</button>
+    </form>
+</div>
+
+<!-- Performance Table -->
+{% if performance_records %}
+<div class="content-block">
+    <h3>📈 Histórico de Registros</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Artigo</th>
+                <th>Plataforma</th>
+                <th>Roteiro</th>
+                <th>Views</th>
+                <th>Saves</th>
+                <th>Likes</th>
+                <th>Coments</th>
+                <th>Data do Post</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for record in performance_records %}
+                <tr>
+                    <td><small>#{{ record.article_id }}</small></td>
+                    <td><small>{{ record.platform }}</small></td>
+                    <td><small>{{ record.roteiro }}</small></td>
+                    <td><strong>{{ record.views or 0 }}</strong></td>
+                    <td><strong style="color: var(--accent);">{{ record.saves or 0 }}</strong></td>
+                    <td><strong style="color: #58a6ff;">{{ record.likes or 0 }}</strong></td>
+                    <td><small>{{ record.comments or 0 }}</small></td>
+                    <td><small>{{ record.posted_at }}</small></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+
+<script>
+    // Load performance stats from API and create chart
+    fetch('/api/performance-stats')
+        .then(r => r.json())
+        .then(data => {
+            const roteiros = data.by_roteiro || [];
+
+            const labels = roteiros.map(r => {
+                const tipo = r.tipo ? r.tipo.split('+')[0].trim().slice(0, 15) : 'N/A';
+                return tipo;
+            });
+
+            const saves = roteiros.map(r => Math.round(r.avg_saves || 0));
+            const views = roteiros.map(r => Math.round(r.avg_views || 0));
+
+            const ctx = document.getElementById('roteiro-chart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Saves (média)',
+                            data: saves,
+                            backgroundColor: 'rgba(35, 134, 54, 0.7)',
+                            borderColor: 'rgba(35, 134, 54, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Views (média)',
+                            data: views,
+                            backgroundColor: 'rgba(88, 166, 255, 0.7)',
+                            borderColor: 'rgba(88, 166, 255, 1)',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: 'rgba(230, 237, 243, 0.8)',
+                                font: { size: 12 }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: 'rgba(230, 237, 243, 0.8)',
+                                font: { size: 11 }
+                            },
+                            grid: {
+                                color: 'rgba(48, 54, 61, 0.5)'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: 'rgba(230, 237, 243, 0.8)',
+                                font: { size: 11 }
+                            },
+                            grid: {
+                                color: 'rgba(48, 54, 61, 0.5)'
+                            }
+                        }
+                    }
+                }
+            });
+        })
+        .catch(e => {
+            document.getElementById('roteiro-chart').parentElement.innerHTML = '<p style="color: var(--text-secondary);">Sem dados de performance ainda.</p>';
+        });
+</script>
+{% endblock %}

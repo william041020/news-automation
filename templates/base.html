@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}News Automation Dashboard{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div style="padding: 1rem 1.5rem; border-bottom: 1px solid var(--border-color); margin-bottom: 1rem;">
+                <h2 style="font-size: 1.25rem; margin: 0;">📰 News Automation</h2>
+                <p style="color: var(--text-secondary); font-size: 0.75rem; margin: 0.5rem 0 0 0;">Dashboard v2.0</p>
+            </div>
+
+            <ul class="nav">
+                <li><a href="/" class="{% if request.path == '/' %}active{% endif %}">🏠 Dashboard</a></li>
+                <li><a href="/history" class="{% if request.path.startswith('/history') %}active{% endif %}">📰 Histórico</a></li>
+                <li><a href="/feeds" class="{% if request.path == '/feeds' %}active{% endif %}">📡 Feeds</a></li>
+                <li><a href="/performance" class="{% if request.path == '/performance' %}active{% endif %}">📊 Performance</a></li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main">
+            <!-- Topbar -->
+            <div class="topbar">
+                <div>
+                    <h1 style="font-size: 1.25rem; margin: 0;">{% block page_title %}Dashboard{% endblock %}</h1>
+                </div>
+                <div>
+                    <span style="font-size: 0.875rem; color: var(--text-secondary);">
+                        Última geração: <strong id="last-run">--</strong>
+                    </span>
+                </div>
+            </div>
+
+            <!-- Content Area -->
+            <div class="content">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert {% if category == 'error' %}error{% elif category == 'success' %}success{% else %}info{% endif %}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+                {% block content %}{% endblock %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Update last run time on page load
+        fetch('/api/last-run')
+            .then(r => r.json())
+            .then(data => {
+                document.getElementById('last-run').textContent = data.last_run || 'Nunca';
+            })
+            .catch(err => console.log('Info not available'));
+    </script>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

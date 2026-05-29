@@ -1,0 +1,253 @@
+{% extends "base.html" %}
+
+{% block page_title %}Artigo #{{ article.id }}{% endblock %}
+
+{% block content %}
+<style>
+    .article-header {
+        margin-bottom: 2rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .article-meta {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .meta-item {
+        background-color: var(--bg-tertiary);
+        padding: 1rem;
+        border-radius: 6px;
+        border-left: 3px solid var(--accent);
+    }
+
+    .meta-label {
+        color: var(--text-secondary);
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        margin-bottom: 0.5rem;
+    }
+
+    .meta-value {
+        color: var(--text-primary);
+        font-weight: 500;
+    }
+
+    .roteiro-section {
+        background-color: var(--bg-secondary);
+        padding: 1.5rem;
+        border-radius: 6px;
+        margin-bottom: 1.5rem;
+        border-left: 4px solid var(--accent);
+    }
+
+    .roteiro-label {
+        color: var(--accent);
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+
+    .roteiro-title {
+        font-size: 1.25rem;
+        font-weight: bold;
+        color: var(--text-primary);
+        margin-bottom: 1rem;
+    }
+
+    .part {
+        margin-bottom: 1.5rem;
+    }
+
+    .part-label {
+        color: var(--text-secondary);
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        margin-bottom: 0.5rem;
+    }
+
+    .part-content {
+        background-color: var(--bg-tertiary);
+        padding: 1rem;
+        border-radius: 4px;
+        border-left: 3px solid var(--accent-light);
+    }
+
+    .carousel-slide {
+        background-color: var(--bg-secondary);
+        padding: 1.5rem;
+        border-radius: 6px;
+        margin-bottom: 1rem;
+        border-left: 4px solid var(--accent);
+    }
+
+    .thread-post {
+        background-color: var(--bg-secondary);
+        padding: 1rem;
+        border-radius: 6px;
+        margin-bottom: 1rem;
+        border-left: 3px solid var(--accent);
+    }
+
+    .thread-post-num {
+        color: var(--accent);
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+    }
+</style>
+
+<div class="article-header">
+    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+        <h1 class="page-title" style="margin: 0;">Artigo #{{ article.id }}</h1>
+        <a href="/history" class="btn">← Voltar</a>
+    </div>
+
+    <div class="article-meta">
+        <div class="meta-item">
+            <div class="meta-label">Data de Geração</div>
+            <div class="meta-value">{{ article.run_date }}</div>
+        </div>
+        <div class="meta-item">
+            <div class="meta-label">Fonte</div>
+            <div class="meta-value">{{ article.source }}</div>
+        </div>
+        {% if article.get('link') %}
+        <div class="meta-item">
+            <div class="meta-label">Leitura Original</div>
+            <div class="meta-value"><a href="{{ article.link }}" target="_blank" style="color: var(--accent);">Abrir →</a></div>
+        </div>
+        {% endif %}
+    </div>
+
+    <div style="background-color: var(--bg-tertiary); padding: 1rem; border-radius: 6px;">
+        <div style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 0.25rem;">Ângulo de Abordagem</div>
+        <div style="font-size: 1.1rem; color: var(--accent); font-weight: 500;">{{ article.content.gancho_tema }}</div>
+    </div>
+</div>
+
+<!-- Tabs -->
+<div class="tabs">
+    <button class="tab-btn active" onclick="showTab(event, 'roteiro-a')">Roteiro A</button>
+    <button class="tab-btn" onclick="showTab(event, 'roteiro-b')">Roteiro B</button>
+    <button class="tab-btn" onclick="showTab(event, 'carrossel')">Carrossel</button>
+    <button class="tab-btn" onclick="showTab(event, 'thread')">Thread</button>
+    <button class="tab-btn" onclick="showTab(event, 'legenda')">Legenda</button>
+</div>
+
+<!-- Roteiro A -->
+<div id="roteiro-a" class="tab-content active">
+    {% set r1 = article.content.roteiro_1 %}
+    <div class="roteiro-section">
+        <div class="roteiro-label">{{ r1.tipo }}</div>
+        <div class="roteiro-title">{{ r1.titulo }}</div>
+        <div style="color: var(--text-secondary); margin-bottom: 1rem;">Duração: {{ r1.duracao }}</div>
+
+        <div class="part">
+            <div class="part-label">Gancho</div>
+            <div class="part-content">{{ r1.gancho }}</div>
+            <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.5rem;">💡 {{ r1.nota_gancho }}</div>
+        </div>
+
+        <div class="part">
+            <div class="part-label">Desenvolvimento</div>
+            <div class="part-content">{{ r1.desenvolvimento }}</div>
+        </div>
+
+        <div class="part">
+            <div class="part-label">Call to Action</div>
+            <div class="part-content">{{ r1.cta }}</div>
+            <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.5rem;">💡 {{ r1.nota_cta }}</div>
+        </div>
+    </div>
+</div>
+
+<!-- Roteiro B -->
+<div id="roteiro-b" class="tab-content">
+    {% set r2 = article.content.roteiro_2 %}
+    <div class="roteiro-section">
+        <div class="roteiro-label">{{ r2.tipo }}</div>
+        <div class="roteiro-title">{{ r2.titulo }}</div>
+        <div style="color: var(--text-secondary); margin-bottom: 1rem;">Duração: {{ r2.duracao }}</div>
+
+        <div class="part">
+            <div class="part-label">Gancho</div>
+            <div class="part-content">{{ r2.gancho }}</div>
+            <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.5rem;">💡 {{ r2.nota_gancho }}</div>
+        </div>
+
+        <div class="part">
+            <div class="part-label">Desenvolvimento</div>
+            <div class="part-content">{{ r2.desenvolvimento }}</div>
+        </div>
+
+        <div class="part">
+            <div class="part-label">Call to Action</div>
+            <div class="part-content">{{ r2.cta }}</div>
+            <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.5rem;">💡 {{ r2.nota_cta }}</div>
+        </div>
+    </div>
+</div>
+
+<!-- Carrossel -->
+<div id="carrossel" class="tab-content">
+    {% set cs = article.content.carrossel %}
+    <div class="carousel-slide">
+        <div style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 0.5rem;">Capa</div>
+        <div style="font-size: 1.25rem; font-weight: bold; color: var(--accent); margin-bottom: 0.5rem;">{{ cs.titulo_capa }}</div>
+        <div style="color: var(--text-secondary);">{{ cs.subtitulo_capa }}</div>
+    </div>
+
+    {% for i in range(2, 7) %}
+        {% set slide_key = 'slide_' + (i|string) if i < 6 else 'slide_6_cta' %}
+        <div class="carousel-slide">
+            <div style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 0.5rem;">Slide {{ i }}</div>
+            <div>{{ cs[slide_key] }}</div>
+        </div>
+    {% endfor %}
+</div>
+
+<!-- Thread -->
+<div id="thread" class="tab-content">
+    {% set thread = article.content.thread %}
+    {% for i in range(1, 9) %}
+        <div class="thread-post">
+            <div class="thread-post-num">Post {{ i }}</div>
+            <div>{{ thread['post_' + (i|string)] }}</div>
+        </div>
+    {% endfor %}
+</div>
+
+<!-- Legenda -->
+<div id="legenda" class="tab-content">
+    <div class="content-block">
+        <h3>Legenda Sugerida para Redes Sociais</h3>
+        <div style="background-color: var(--bg-secondary); padding: 1.5rem; border-radius: 6px; border-left: 4px solid var(--accent); white-space: pre-wrap; font-size: 1rem;">{{ article.content.legenda_sugerida }}</div>
+    </div>
+</div>
+
+<!-- Action Button -->
+<div style="margin-top: 2rem; display: flex; gap: 1rem;">
+    <a href="/performance?article_id={{ article.id }}" class="btn btn-primary">📊 Registrar Performance</a>
+</div>
+
+<script>
+    function showTab(e, tabName) {
+        e.preventDefault();
+
+        // Hide all content
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+
+        // Remove active from all buttons
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+
+        // Show selected
+        document.getElementById(tabName).classList.add('active');
+        e.target.classList.add('active');
+    }
+</script>
+{% endblock %}

@@ -55,51 +55,50 @@ CADA ROTEIRO TEM 4 PARTES:
    - Expressão (rosto de indignado, sarcástico, questionador)
    - Pausas (onde fazer pausa no vídeo)
 
-TONS VIRAIS EM ALTA AGORA:
-- Ironia e sarcasmo (falar o oposto com tom de verdade)
-- Confrontação direta ("voce está errando")
-- Identificação emocional ("voce se vê nisso?")
-- Humor absurdo (exagerar o problema)
-- Provocação inteligente (gerar curiosidade)
+TONS VIRAIS EM ALTA AGORA - USE BASTANTE:
+- **SARCASMO**: "Continua queimando dinheiro então 🤦" (tom de: é óbvio que você tá errando)
+- **IRONIA**: "Seu concorrente tá rindo mesmo sim" (fingir concordância enquanto provoca)
+- **CONFRONTAÇÃO**: "Você não tá vendo resultado porque está fazendo errado" (direto, sem meias palavras)
+- **ABSURDO**: "Você coloca R$100/dia em anúncio e acha que vai vender como McDonald's" (exagerar o erro)
+- **IDENTIFICAÇÃO**: "Aposto que você já fez isso..." (gerar reconhecimento imediato)
+- **PERGUNTA PROVOCADORA**: "Sabe por que seus anúncios não vendem?" (curiosidade + provocação)
 
 Responda SEMPRE em português brasileiro COLOQUIAL. Responda APENAS com JSON valido."""
 
-PROMPT_TEMPLATE = """Noticia sobre gestao de trafego pago / anuncios online / marketing digital:
+PROMPT_TEMPLATE = """NOTICIA sobre negocio de empresario local (clinica, loja, restaurante, consultorio):
 
 NOTICIA:
 Titulo: {title}
 Resumo: {summary}
 Fonte: {source}
 
-IMPORTANTE: Use TONS VIRAIS — ironia, sarcasmo, confrontacao, identificacao emocional.
+IMPORTANTE: Use TONS VIRAIS — sarcasmo, ironia, confrontacao, absurdo, identificacao emocional.
 
-Crie roteiros de video no FORMATO EXATO dos exemplos abaixo. Responda APENAS com JSON valido:
+Crie 3 roteiros de video CURTOS E VIRAIS para empresarios locais. Responda APENAS com JSON valido:
 
 {{
-  "gancho_tema": "Tema central provocador em poucas palavras",
-
   "roteiro_1": {{
-    "gancho": "Frase VIRAL de 3-5 segundos que PARA O SCROLL - provocadora/sarcástica/ironica. Ex: 'Continua queimando dinheiro então' ou 'Trabalhando de graça pro concorrente'",
-    "desenvolvimento": "15-30 segundos explicando o PROBLEMA real do gestor de trafego - use exemplos do dia a dia, estruture como: o que erra → por que erra → consequencia",
-    "cta": "Call to action natural em 5-10 segundos - 'me manda um direct', 'chama no direct', 'vem resolver isso comigo'",
-    "nota_entrega": "VELOCIDADE (rápido/meio-rápido/pausado) | TOM (sarcástico/sério/provocador) | EXPRESSÃO (indignado/sarcástico/questionador) | PAUSAS (onde fazer pausa)"
+    "gancho": "FRASE VIRAL SARCÁSTICA de 3-5s que PARA O SCROLL. Deve soar como: tom de provocacao + ironia. Ex: 'Continua queimando dinheiro em anuncios então' ou 'Seu concorrente tá rindo mesmo sim de você'",
+    "desenvolvimento": "EDUCATIVO + DIRETO (15-30s): Explique qual é o ERRO real que empresários locais cometem em anúncios. Use exemplos concretos: 'Você coloca R$50/dia mas não sabe nem quem é seu cliente'. Estruture: ERRO → POR QUE ERRA → CONSEQUÊNCIA",
+    "cta": "NATURAL (5-10s): 'Me manda um direct', 'Vem conversar comigo', 'Chama no chat'",
+    "nota_entrega": "VELOCIDADE: (rápido/pausado) | TOM: (sarcástico/sério) | EXPRESSÃO: (indignado/questionador/riso sarcástico) | PAUSAS: (onde pausar para efeito)"
   }},
 
   "roteiro_2": {{
-    "gancho": "Outro gancho VIRAL completamente diferente do roteiro_1 - mesmo tema mas angulo diferente",
-    "desenvolvimento": "Desenvolvimento diferente, outra perspectiva do mesmo problema",
-    "cta": "CTA diferente do roteiro_1",
-    "nota_entrega": "Velocidade, tom, expressão e pausas"
+    "gancho": "Gancho COMPLETAMENTE DIFERENTE do roteiro_1 - outra perspectiva, outro tom viral",
+    "desenvolvimento": "Outro angulo do mesmo problema - mais educativo ou mais confrontador",
+    "cta": "Outra CTA natural diferente",
+    "nota_entrega": "Velocidade, tom, expressão, pausas"
   }},
 
   "roteiro_3": {{
-    "gancho": "Terceiro gancho VIRAL - terceira perspectiva",
-    "desenvolvimento": "Mais um desenvolvimento diferente",
-    "cta": "Outro CTA natural",
-    "nota_entrega": "Como entregar este roteiro"
+    "gancho": "Terceiro gancho VIRAL - mais uma perspectiva diferente",
+    "desenvolvimento": "Terceira abordagem do problema",
+    "cta": "Terceira CTA natural",
+    "nota_entrega": "Como entregar"
   }},
 
-  "dica_bonus": "Uma dica prática de 1-2 linhas que o gestor pode aplicar AGORA mesmo relacionada a noticia"
+  "dica_pratica": "Dica ACIONÁVEL de 1 linha que empresario pode fazer HOJE: 'Coloque um script claro quando alguém clica no seu anúncio'"
 }}"""
 
 # Required JSON schema keys

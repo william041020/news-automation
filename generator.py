@@ -142,8 +142,9 @@ def generate_content(article: dict, client: Groq, max_retries: int = MAX_RETRIES
                     {"role": "system", "content": SYSTEM_PROMPT},
                     {"role": "user", "content": prompt},
                 ],
-                temperature=0.8,
-                max_tokens=3000,
+                temperature=0.7,
+                max_tokens=2000,
+                timeout=120.0,
             )
 
             raw = response.choices[0].message.content.strip()

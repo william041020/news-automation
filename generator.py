@@ -74,31 +74,41 @@ Fonte: {source}
 
 IMPORTANTE: Use TONS VIRAIS — sarcasmo, ironia, confrontacao, absurdo, identificacao emocional.
 
-Crie 3 roteiros de video CURTOS E VIRAIS para empresarios locais. Responda APENAS com JSON valido:
+Crie conteudo COMPLETO E VARIADO. Responda APENAS com JSON valido:
 
 {{
   "roteiro_1": {{
-    "gancho": "FRASE VIRAL SARCÁSTICA de 3-5s que PARA O SCROLL. Deve soar como: tom de provocacao + ironia. Ex: 'Continua queimando dinheiro em anuncios então' ou 'Seu concorrente tá rindo mesmo sim de você'",
-    "desenvolvimento": "EDUCATIVO + DIRETO (15-30s): Explique qual é o ERRO real que empresários locais cometem em anúncios. Use exemplos concretos: 'Você coloca R$50/dia mas não sabe nem quem é seu cliente'. Estruture: ERRO → POR QUE ERRA → CONSEQUÊNCIA",
-    "cta": "NATURAL (5-10s): 'Me manda um direct', 'Vem conversar comigo', 'Chama no chat'",
-    "nota_entrega": "VELOCIDADE: (rápido/pausado) | TOM: (sarcástico/sério) | EXPRESSÃO: (indignado/questionador/riso sarcástico) | PAUSAS: (onde pausar para efeito)"
+    "gancho": "GANCHO SARCÁSTICO/IRÔNICO (3-5s) que PARA O SCROLL. Exemplo: 'Seu concorrente tá vendendo porque sabe esse segredo que você ignora'",
+    "desenvolvimento": "ESPECÍFICO E EDUCATIVO (15-30s): Qual é o ERRO real? CONCRETO: 'Você acha que anuncio funciona sozinho', 'Você coloca dinheiro mas não acompanha', 'Seus anuncios chegam pra quem não quer'. POR QUE ERRA? 'Porque nao entende seu cliente', 'Porque nao sabe otimizar'. CONSEQUÊNCIA: 'Seu dinheiro vai pelo ralo'",
+    "cta": "CTA NATURAL: 'Me chama no direct', 'Vem eu te mostro como', 'Quer entender isso?'",
+    "nota_entrega": "VELOCIDADE: (rápido/pausado) | TOM: (sarcástico/provocador/direto) | EXPRESSÃO: (riso sarcástico/indignado) | PAUSAS: (pausa aqui para efeito)"
   }},
 
   "roteiro_2": {{
-    "gancho": "Gancho COMPLETAMENTE DIFERENTE do roteiro_1 - outra perspectiva, outro tom viral",
-    "desenvolvimento": "Outro angulo do mesmo problema - mais educativo ou mais confrontador",
-    "cta": "Outra CTA natural diferente",
+    "gancho": "GANCHO CONFRONTADOR diferente do roteiro_1. Use: pergunta provocadora, absurdo, ou identificação. Ex: 'Você prefere continuar queimando dinheiro ou quer aprender?'",
+    "desenvolvimento": "Outro angulo TOTALMENTE DIFERENTE do roteiro_1. Se roteiro_1 foi sobre 'falta de estrategia', este pode ser 'falta de conhecimento', 'medo', 'procrastinação'",
+    "cta": "Outra CTA natural - diferente da primeira",
     "nota_entrega": "Velocidade, tom, expressão, pausas"
   }},
 
   "roteiro_3": {{
-    "gancho": "Terceiro gancho VIRAL - mais uma perspectiva diferente",
-    "desenvolvimento": "Terceira abordagem do problema",
+    "gancho": "Terceiro gancho COMPLETAMENTE DIFERENTE - pode ser humor, absurdo, ou pergunta",
+    "desenvolvimento": "Terceira perspectiva única",
     "cta": "Terceira CTA natural",
     "nota_entrega": "Como entregar"
   }},
 
-  "dica_pratica": "Dica ACIONÁVEL de 1 linha que empresario pode fazer HOJE: 'Coloque um script claro quando alguém clica no seu anúncio'"
+  "carrossel": {{
+    "titulo_capa": "Titulo educativo + provocador (max 8 palavras) - Ex: 'Por que seus anuncios nao vendem'",
+    "subtitulo_capa": "Subtitulo que complementa (1-2 linhas)",
+    "slide_2": "PROBLEMA: Qual é o problema que empresários enfrentam? (2-3 linhas específicas)",
+    "slide_3": "POR QUE ERRA: Por que a maioria erra nisso? (2-3 linhas)",
+    "slide_4": "CONSEQUÊNCIA: O que acontece se não resolver? (2-3 linhas)",
+    "slide_5": "SOLUÇÃO: O que fazer diferente? (2-3 linhas práticas)",
+    "slide_6_cta": "CALL TO ACTION: Me marca nos comentários | Me chama no direct | Salva esse carrossel"
+  }},
+
+  "legenda_sugerida": "Legenda viral (2-3 linhas) com gancho + emojis + CTA. Ex: 'Seu concorrente ta rindo 😂 Você já fez isso? Me chama no direct 👇'"
 }}"""
 
 # Required JSON schema keys

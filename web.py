@@ -11,6 +11,7 @@ import threading
 from datetime import date, datetime
 from pathlib import Path
 from flask import Flask, render_template, request, jsonify, redirect, url_for, flash
+from flask_cors import CORS
 
 # Ensure this directory is in the path for imports
 _here = Path(__file__).parent
@@ -24,6 +25,7 @@ import formatter
 
 # Initialize Flask
 app = Flask(__name__)
+CORS(app)
 app.secret_key = os.urandom(16)
 
 # Generation status tracker

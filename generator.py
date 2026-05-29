@@ -10,133 +10,113 @@ from groq import Groq
 
 MODEL = "llama-3.3-70b-versatile"
 MAX_RETRIES = 3
-INITIAL_BACKOFF = 2  # seconds
+INITIAL_BACKOFF = 2
 
-SYSTEM_PROMPT = """Voce e um gestor de trafego pago que se posiciona criando conteudo VIRAL para conquistar clientes.
+SYSTEM_PROMPT = """Voce e um gestor de trafego pago criando conteudo de REDES SOCIAIS para EMPRESARIOS LOCAIS.
 
-PERSONA DO CRIADOR:
+QUEM E O CRIADOR (voce):
 - Gestor de trafego pago com agencia propria
-- Se posiciona pelo PERFIL PESSOAL (é a CARA do negócio, não a marca)
-- Cria conteudo EDUCATIVO para empresarios locais que estao queimando dinheiro em anuncios
-- Tom: DIRETO, PROVOCADOR, INTELIGENTE, SEM FILTRO, conversador
-- Objetivo: construir AUDIÊNCIA VIRAL com empresarios e vender seu serviço de gestão de tráfego
+- Perfil pessoal (nao marca da agencia)
+- Tom: direto, um pouco provocador, inteligente, sem ser arrogante
 
-CLIENTE IDEAL (PUBLICO ALVO):
-- Empresarios de negocios LOCAIS: clinicas, consultórios, lojas, advogados, dentistas, medicos, saloes, restaurantes
-- Estao gastando dinheiro em anuncios MAS nao veem resultado
-- Nao entendem como funciona anuncios online (Facebook, Google, Instagram)
-- Tentam fazer sozinhos e perdem dinheiro todo mes
-- Acham que anuncio online nao funciona porque nao viram resultado
-- Buscam alguem que EXPLIQUE o problema e RESOLVA para eles
+QUEM E O PUBLICO (para quem voce fala):
+- EMPRESARIOS de negocios locais: clinicas, dentistas, medicos, advogados, lojas de iPhone, saloes, restaurantes, academias
+- Nunca rodaram anuncios online OU rodaram e nao tiveram resultado
+- Acham que anuncio online "nao funciona pra eles"
+- Estao dependendo 100% de indicacao
+- Perdem clientes pro concorrente todo mes sem entender por que
+- Querem mais clientes mas nao sabem como atrair de forma previsivel
 
-FORMATO DOS ROTEIROS (OBRIGATORIO):
-CADA ROTEIRO TEM 4 PARTES:
+OBJETIVO DO CONTEUDO:
+- Fazer o empresario se identificar com o problema
+- Educá-lo sobre por que seus anuncios nao funcionam (ou por que ele ainda nao anuncia)
+- Gerar curiosidade e vontade de falar com voce
+- CTA sempre: "me chama no direct", "me manda uma mensagem", "vem conversar"
 
-1. GANCHO (3-5 segundos, VIRAL e PROVOCADOR):
-   - Frase curtíssima que PARA O SCROLL
-   - Tom: irônico, sarcástico, confrontador ou que gera IDENTIFICAÇÃO IMEDIATA
-   - Exemplos: "Continua queimando dinheiro então", "Trabalhando de graça pro concorrente", "Tá bom ficar estagnado"
-   - NÃO explicar nada ainda, só provocar
+FORMATO EXATO DOS ROTEIROS (siga este modelo):
+- TIPO: ex "Inversao + deboche leve" ou "Cenario absurdo" ou "Provocacao direta" ou "Humor acido" ou "Identificacao emocional"
+- TITULO: frase impactante de 4-6 palavras que resume o video (aparece na thumbnail)
+- GANCHO: 2-3 frases que PARAM O SCROLL nos primeiros 3 segundos. Fala direto com o empresario que ja errou isso.
+- NOTA_GANCHO: como o criador deve falar o gancho (tom, velocidade, expressao, pausa)
+- DESENVOLVIMENTO: 3-5 frases educativas explicando o problema com exemplos reais de negocios locais
+- CTA: 1-2 frases naturais de call to action que conectam com o gancho
+- NOTA_CTA: como fechar o video, o que retomar do gancho
 
-2. DESENVOLVIMENTO (15-30 segundos, EDUCATIVO):
-   - Explicar o PROBLEMA que o gestor tem
-   - Usar exemplos REAIS do dia a dia
-   - Estrutura: o que a maioria faz errado → por que erra → qual a consequência
-   - Tom continua direto e provocador
+EXEMPLOS DE GANCHOS VIRAIS (use como referencia de tom):
+- "Se voce ta de boa jogando dinheiro fora em anuncio que nao converte, sem nem saber por que — tudo bem, continua assim. Esse video aqui e pra quem ja encheu o saco disso."
+- "Se voce prefere continuar dependendo de indicacao enquanto seu concorrente aparece na frente de todo mundo com anuncio — respeito. Esse video aqui nao e pra voce."
+- "Se voce ta satisfeito faturando o mesmo valor todo mes faz um ano — nao precisa assistir isso aqui. Mas se isso ta te incomodando, fica."
+- "Voce acha que impulsionar post por R$20 e anunciar o seu negocio de verdade — esse video nao e pra voce nao. Mas se voce ja desconfiou que ta jogando dinheiro fora, continua aqui."
 
-3. CTA (5-10 segundos, NATURAL):
-   - Call to action natural: "me manda um direct", "chama no direct", "vem comigo resolver isso"
-   - Conectar com uma frase do gancho ou desenvolvimento
-   - NÃO soar como venda forcada
+Responda SEMPRE em portugues brasileiro coloquial. Responda APENAS com JSON valido."""
 
-4. NOTA DE ENTREGA (como o criador deve falar):
-   - Velocidade (rápido, meio rápido, pausado)
-   - Tom (sarcástico, sério, provocador, irônico)
-   - Expressão (rosto de indignado, sarcástico, questionador)
-   - Pausas (onde fazer pausa no vídeo)
-
-TONS VIRAIS EM ALTA AGORA - USE BASTANTE:
-- **SARCASMO**: "Continua queimando dinheiro então 🤦" (tom de: é óbvio que você tá errando)
-- **IRONIA**: "Seu concorrente tá rindo mesmo sim" (fingir concordância enquanto provoca)
-- **CONFRONTAÇÃO**: "Você não tá vendo resultado porque está fazendo errado" (direto, sem meias palavras)
-- **ABSURDO**: "Você coloca R$100/dia em anúncio e acha que vai vender como McDonald's" (exagerar o erro)
-- **IDENTIFICAÇÃO**: "Aposto que você já fez isso..." (gerar reconhecimento imediato)
-- **PERGUNTA PROVOCADORA**: "Sabe por que seus anúncios não vendem?" (curiosidade + provocação)
-
-Responda SEMPRE em português brasileiro COLOQUIAL. Responda APENAS com JSON valido."""
-
-PROMPT_TEMPLATE = """NOTICIA sobre negocio de empresario local (clinica, loja, restaurante, consultorio):
+PROMPT_TEMPLATE = """NOTICIA / TREND DO BRASIL para criar conteudo viral para EMPRESARIOS LOCAIS:
 
 NOTICIA:
 Titulo: {title}
 Resumo: {summary}
 Fonte: {source}
 
-IMPORTANTE: Use TONS VIRAIS — sarcasmo, ironia, confrontacao, absurdo, identificacao emocional.
+IMPORTANTE:
+- O conteudo fala COM o empresario local (clinica, loja, restaurante, etc)
+- Use a noticia como GANCHO ou CONTEXTO, mas o video e sobre ANUNCIOS e CLIENTES NOVOS
+- Gere 3 roteiros com angulos COMPLETAMENTE DIFERENTES
+- Carrossel e legenda devem ser especificos e completos
 
-Crie conteudo COMPLETO E VARIADO. Responda APENAS com JSON valido:
+Responda APENAS com JSON valido neste formato:
 
 {{
   "roteiro_1": {{
-    "gancho": "GANCHO SARCÁSTICO/IRÔNICO (3-5s) que PARA O SCROLL. Exemplo: 'Seu concorrente tá vendendo porque sabe esse segredo que você ignora'",
-    "desenvolvimento": "ESPECÍFICO E EDUCATIVO (15-30s): Qual é o ERRO real? CONCRETO: 'Você acha que anuncio funciona sozinho', 'Você coloca dinheiro mas não acompanha', 'Seus anuncios chegam pra quem não quer'. POR QUE ERRA? 'Porque nao entende seu cliente', 'Porque nao sabe otimizar'. CONSEQUÊNCIA: 'Seu dinheiro vai pelo ralo'",
-    "cta": "CTA NATURAL: 'Me chama no direct', 'Vem eu te mostro como', 'Quer entender isso?'",
-    "nota_entrega": "VELOCIDADE: (rápido/pausado) | TOM: (sarcástico/provocador/direto) | EXPRESSÃO: (riso sarcástico/indignado) | PAUSAS: (pausa aqui para efeito)"
+    "tipo": "Inversao + [deboche leve / cenario absurdo / provocacao direta / humor acido / identificacao emocional]",
+    "titulo": "Frase impactante de 4-6 palavras para thumbnail",
+    "duracao": "~45s",
+    "gancho": "2-3 frases que param o scroll. Fala direto com o empresario que ja errou isso. Tom: ironico, sarcastico ou identificacao imediata.",
+    "nota_gancho": "Como falar: velocidade (rapido/pausado), expressao (riso sarcastico/indignado/serio), pausa (onde fazer pausa)",
+    "desenvolvimento": "3-5 frases explicando o problema real com exemplos concretos de negocios locais: clinica que nao aparece no Google, dentista que impulsiona post e nao vende, loja que para campanha antes da hora. Estrutura: erro → por que erra → consequencia",
+    "cta": "1-2 frases de CTA natural que retomam palavra ou ideia do gancho. Ex: 'Se voce quer parar de queimar dinheiro no escuro e entender como fazer isso funcionar de verdade pro seu negocio, me manda um direct'",
+    "nota_cta": "O que retomar do gancho/desenvolvimento para fechar o circulo"
   }},
 
   "roteiro_2": {{
-    "gancho": "GANCHO CONFRONTADOR diferente do roteiro_1. Use: pergunta provocadora, absurdo, ou identificação. Ex: 'Você prefere continuar queimando dinheiro ou quer aprender?'",
-    "desenvolvimento": "Outro angulo TOTALMENTE DIFERENTE do roteiro_1. Se roteiro_1 foi sobre 'falta de estrategia', este pode ser 'falta de conhecimento', 'medo', 'procrastinação'",
-    "cta": "Outra CTA natural - diferente da primeira",
-    "nota_entrega": "Velocidade, tom, expressão, pausas"
+    "tipo": "Tipo DIFERENTE do roteiro_1",
+    "titulo": "Titulo DIFERENTE - outro angulo",
+    "duracao": "~45s",
+    "gancho": "Gancho com tom completamente diferente - se roteiro_1 foi sarcastico, este pode ser de identificacao emocional ou cenario absurdo",
+    "nota_gancho": "Como entregar este gancho",
+    "desenvolvimento": "Outro problema real, outro exemplo de negocio local diferente",
+    "cta": "CTA diferente da primeira",
+    "nota_cta": "Como fechar este"
   }},
 
   "roteiro_3": {{
-    "gancho": "Terceiro gancho COMPLETAMENTE DIFERENTE - pode ser humor, absurdo, ou pergunta",
-    "desenvolvimento": "Terceira perspectiva única",
-    "cta": "Terceira CTA natural",
-    "nota_entrega": "Como entregar"
+    "tipo": "Terceiro tipo diferente",
+    "titulo": "Terceiro titulo",
+    "duracao": "~45s",
+    "gancho": "Terceiro angulo - pode ser mais educativo, mais confrontador ou com humor",
+    "nota_gancho": "Entrega do terceiro",
+    "desenvolvimento": "Terceiro problema, terceiro exemplo real",
+    "cta": "Terceira CTA",
+    "nota_cta": "Fechamento do terceiro"
   }},
 
   "carrossel": {{
-    "titulo_capa": "Titulo educativo + provocador (max 8 palavras) - Ex: 'Por que seus anuncios nao vendem'",
-    "subtitulo_capa": "Subtitulo que complementa (1-2 linhas)",
-    "slide_2": "PROBLEMA: Qual é o problema que empresários enfrentam? (2-3 linhas específicas)",
-    "slide_3": "POR QUE ERRA: Por que a maioria erra nisso? (2-3 linhas)",
-    "slide_4": "CONSEQUÊNCIA: O que acontece se não resolver? (2-3 linhas)",
-    "slide_5": "SOLUÇÃO: O que fazer diferente? (2-3 linhas práticas)",
-    "slide_6_cta": "CALL TO ACTION: Me marca nos comentários | Me chama no direct | Salva esse carrossel"
+    "titulo_capa": "Titulo educativo e provocador (max 8 palavras). Ex: 'Por que sua clinica nao aparece pra novos clientes'",
+    "subtitulo_capa": "1 linha complementando a capa",
+    "slide_2": "PROBLEMA (2-3 linhas especificas para empresario local): O que ele esta enfrentando hoje relacionado ao tema",
+    "slide_3": "POR QUE ERRA (2-3 linhas): A mentalidade ou crenca errada por tras do problema",
+    "slide_4": "CONSEQUENCIA (2-3 linhas): O que acontece se continuar assim — clientes que vai perder, dinheiro desperdicado",
+    "slide_5": "SOLUCAO (2-3 linhas praticas): O que fazer diferente, o que um anuncio bem feito resolve",
+    "slide_6_cta": "CTA do carrossel: 'Salva esse post', 'Me manda uma mensagem', 'Comenta aqui se voce ja passou por isso'"
   }},
 
-  "legenda_sugerida": "Legenda viral (2-3 linhas) com gancho + emojis + CTA. Ex: 'Seu concorrente ta rindo 😂 Você já fez isso? Me chama no direct 👇'"
+  "legenda_sugerida": "Legenda de 3-4 linhas para o post. Gancho forte na primeira linha + emoji + desenvolvimento rapido + CTA no final. Ex: 'Voce ta pagando pra aparecer pra quem nao quer comprar 😅\\n\\nIsso acontece quando o anuncio nao tem segmentacao certa...\\n\\nComenta DIRETO que te explico como corrigir 👇'"
 }}"""
-
-# Required JSON schema keys
-REQUIRED_KEYS = {
-    "gancho_tema",
-    "roteiro_1",
-    "roteiro_2",
-    "carrossel",
-    "thread",
-    "legenda_sugerida",
-}
-
-ROTEIRO_REQUIRED_KEYS = {"tipo", "titulo", "duracao", "gancho", "nota_gancho", "desenvolvimento", "cta", "nota_cta"}
-CARROSSEL_REQUIRED_KEYS = {"titulo_capa", "subtitulo_capa", "slide_2", "slide_3", "slide_4", "slide_5", "slide_6_cta"}
-THREAD_REQUIRED_KEYS = {f"post_{i}" for i in range(1, 9)}
 
 
 def validate_schema(content: dict) -> bool:
-    """Validate that the generated JSON has at least some required keys."""
     if not isinstance(content, dict):
         return False
-
-    # Require at least one of the main content types
-    has_roteiro = any(k in content for k in ["roteiro_1", "roteiro_2"])
-    has_carrossel = "carrossel" in content
-    has_thread = "thread" in content
-
-    return has_roteiro or has_carrossel or has_thread
+    return any(k in content for k in ["roteiro_1", "roteiro_2", "carrossel"])
 
 
 def generate_content(article: dict, client: Groq, max_retries: int = MAX_RETRIES) -> dict:
@@ -158,8 +138,8 @@ def generate_content(article: dict, client: Groq, max_retries: int = MAX_RETRIES
                     {"role": "system", "content": SYSTEM_PROMPT},
                     {"role": "user", "content": prompt},
                 ],
-                temperature=0.7,
-                max_tokens=2000,
+                temperature=0.8,
+                max_tokens=3000,
                 timeout=120.0,
             )
 
@@ -169,37 +149,34 @@ def generate_content(article: dict, client: Groq, max_retries: int = MAX_RETRIES
 
             match = re.search(r"\{.*\}", raw, re.DOTALL)
             if not match:
-                print(f"    ⚠ Sem JSON na resposta, retornando vazio")
-                return {"error": "no_json"}
+                print(f"    ⚠ Sem JSON na resposta")
+                last_error = ValueError("no_json")
+                continue
 
-            try:
-                content = json.loads(match.group())
-                if isinstance(content, dict):
-                    print(f"    ✓ JSON válido com {len(content)} chaves")
-                    return content
-            except json.JSONDecodeError as e:
-                print(f"    ⚠ JSON inválido: {e}, retornando vazio")
-                return {"error": "invalid_json"}
+            content = json.loads(match.group())
+            if validate_schema(content):
+                print(f"    ✓ JSON valido com {len(content)} chaves")
+                return content
+            else:
+                print(f"    ⚠ Schema invalido, tentando novamente...")
+                last_error = ValueError("schema_invalido")
 
-            return {"error": "unknown"}
-
-        except (json.JSONDecodeError, ValueError) as e:
+        except json.JSONDecodeError as e:
             last_error = e
             if attempt < max_retries:
                 print(f"    Tentativa {attempt}/{max_retries} falhou, retry em {backoff}s...")
                 time.sleep(backoff)
                 backoff *= 2
-            else:
-                print(f"    ERRO apos {max_retries} tentativas: {e}")
 
         except Exception as e:
             print(f"    ERRO inesperado: {e}")
-            return {}
+            last_error = e
+            if attempt < max_retries:
+                time.sleep(backoff)
+                backoff *= 2
 
-    # If all retries failed
     if last_error:
         print(f"    Falha final: {last_error}")
-
     return {}
 
 

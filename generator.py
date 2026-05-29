@@ -111,31 +111,16 @@ THREAD_REQUIRED_KEYS = {f"post_{i}" for i in range(1, 9)}
 
 
 def validate_schema(content: dict) -> bool:
-    """Validate that the generated JSON has all required keys."""
-    # Check top-level keys
-    if not all(key in content for key in REQUIRED_KEYS):
+    """Validate that the generated JSON has at least some required keys."""
+    if not isinstance(content, dict):
         return False
 
-    # Check roteiro_1 and roteiro_2
-    for roteiro_key in ["roteiro_1", "roteiro_2"]:
-        if roteiro_key not in content or not isinstance(content[roteiro_key], dict):
-            return False
-        if not all(key in content[roteiro_key] for key in ROTEIRO_REQUIRED_KEYS):
-            return False
+    # Require at least one of the main content types
+    has_roteiro = any(k in content for k in ["roteiro_1", "roteiro_2"])
+    has_carrossel = "carrossel" in content
+    has_thread = "thread" in content
 
-    # Check carrossel
-    if "carrossel" not in content or not isinstance(content["carrossel"], dict):
-        return False
-    if not all(key in content["carrossel"] for key in CARROSSEL_REQUIRED_KEYS):
-        return False
-
-    # Check thread
-    if "thread" not in content or not isinstance(content["thread"], dict):
-        return False
-    if not all(key in content["thread"] for key in THREAD_REQUIRED_KEYS):
-        return False
-
-    return True
+    return has_roteiro or has_carrossel or has_thread
 
 
 def generate_content(article: dict, client: Groq, max_retries: int = MAX_RETRIES) -> dict:

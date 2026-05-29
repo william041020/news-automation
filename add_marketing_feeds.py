@@ -13,7 +13,7 @@ if str(_here) not in sys.path:
 
 import db
 
-# High-quality feeds about paid traffic, ads, marketing
+# High-quality feeds about paid traffic, ads, marketing + local business
 MARKETING_FEEDS = [
     # Official platforms
     ("Google Ads Blog", "https://www.blog.google/products/ads/feed/"),
@@ -52,6 +52,23 @@ MARKETING_FEEDS = [
     # Content Marketing
     ("Content Marketing Institute", "https://contentmarketinginstitute.com/feed/"),
     ("Copyblogger", "https://www.copyblogger.com/feed/"),
+
+    # LOCAL BUSINESS - Noticias e dicas para pequenos negocios
+    ("SEBRAE - Empreendedorismo", "https://www.sebrae.com.br/sites/PortalSebrae/feed/"),
+    ("Pequenas Empresas & Grandes Negócios", "https://globoplay.globo.com/v/8526768/"),
+    ("Business Insider Brasil", "https://businessinsider.com.br/feed/"),
+    ("Exame - Negócios", "https://exame.com/feed/"),
+
+    # HEALTHCARE BUSINESS (clinicas, consultórios, medicos)
+    ("Consultórios Brasil", "https://www.consultoriosbrasil.com.br/feed/"),
+    ("Dental Business", "https://www.dentalbusiness.com.br/feed/"),
+
+    # RETAIL / E-COMMERCE para lojas
+    ("E-Commerce Brasil", "https://www.ecommercebrasil.com.br/feed/"),
+    ("Retail Analytics", "https://www.retailanalytics.com.br/feed/"),
+
+    # RESTAURANTS / FOOD BUSINESS
+    ("Food Business News", "https://www.foodbusinessnews.net/feed/"),
 ]
 
 def add_feeds():

@@ -1,0 +1,24 @@
+CRIE O REPOSITÓRIO NO GITHUB:
+
+1. Abra: https://github.com/new
+
+2. Preencha:
+   - Repository name: news-automation
+   - Description: News Automation Dashboard v2.0
+   - Visibility: Public
+   - NÃO marque nada em "Initialize"
+
+3. Clique em "Create repository"
+
+4. Você verá uma página com essa mensagem:
+
+   "...or push an existing repository from the command line
+
+    git remote add origin https://github.com/william041020/news-automation.git
+    git branch -M main
+    git push -u origin main"
+
+5. COPIE E EXECUTE ESSES 3 COMANDOS NO POWERSHELL:
+   (A senha é o token que você já tem)
+
+PRONTO! Depois me avisa que você criou.

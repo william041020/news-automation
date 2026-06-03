@@ -155,7 +155,7 @@ def generate_content(article: dict, client: Groq, max_retries: int = MAX_RETRIES
 
             content = json.loads(match.group())
             if validate_schema(content):
-                print(f"    ✓ JSON valido com {len(content)} chaves")
+                print(f"    OK - JSON valido com {len(content)} chaves")
                 return content
             else:
                 print(f"    ⚠ Schema invalido, tentando novamente...")

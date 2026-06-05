@@ -105,21 +105,24 @@ def run(topic: str, no_telegram: bool):
 
     # Save PDF
     click.echo("Gerando PDF...")
+    pdf_filepath = None
     try:
         import pdf_generator
         pdf_path = pdf_generator.generate_pdf(articles, contents)
         if pdf_path:
-            click.echo(f"  PDF salvo em: {pdf_path}")
+            pdf_filepath = Path(pdf_path)
+            click.echo(f"  PDF salvo em: {pdf_filepath}")
         else:
             click.echo("  PDF nao gerado (instale: pip install fpdf2)")
     except Exception as e:
         click.echo(f"  Aviso PDF: {e}")
 
-    # Send to Telegram
+    # Send to Telegram — envia PDF se disponivel, senao envia Markdown
     if not no_telegram:
         click.echo("Enviando para Telegram...")
         preview = formatter.format_telegram_preview(articles, contents)
-        notifier.send_telegram(preview, filepath)
+        send_file = pdf_filepath if pdf_filepath else filepath
+        notifier.send_telegram(preview, send_file)
 
     click.echo("\nPronto!")
 
